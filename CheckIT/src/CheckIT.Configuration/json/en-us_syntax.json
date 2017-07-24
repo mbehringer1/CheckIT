@@ -1,0 +1,8 @@
+﻿{
+  "index": "0",
+  "Joiner": "-",
+  "Divisor": "/100",
+  "Denomination": "dollars",
+  "DecimalPoint": ".",
+  "Ignore": ","
+}
