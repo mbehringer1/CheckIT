@@ -1,4 +1,5 @@
-﻿using CheckIT.Configuration.Interfaces;
+﻿using CheckIT.Api.Classes;
+using CheckIT.Configuration.Interfaces;
 using CheckIT.Core.Numbers.Interfaces;
 using CheckIT.Parsing;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 namespace CheckIT.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class NumberToStringController : ControllerBase
+    public class NumberToStringController : Controller
     {
         /// <summary>
         /// The locale for language
@@ -29,7 +30,7 @@ namespace CheckIT.Api.Controllers
         /// The factory.
         /// </value>
         private IFactory Factory { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the money to string converter.
         /// </summary>
@@ -57,18 +58,8 @@ namespace CheckIT.Api.Controllers
         /// <param name="locale">The locale.</param>
         /// <returns></returns>
         [HttpPost("Money")]
-        public string MoneyToString([FromBody]decimal value, string locale = "en-us")
-                    => MoneyToStringConverter.Parse(value);
-
-        /// <summary>
-        /// Moneys to string asynchronous.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="locale">The locale.</param>
-        /// <returns></returns>
-        [HttpPost("MoneyAsync")]
-        public async Task<string> MoneyToStringAsync([FromBody]decimal value, string locale = "en-us")
-                    => await MoneyToStringConverter.ParseAsync(value);
+        public JsonResult PostMoneyToString([FromBody]string value, string locale)
+                    => Json(ConvertMoneyToString(value, locale));
 
         /// <summary>
         /// Moneys to string.
@@ -77,17 +68,13 @@ namespace CheckIT.Api.Controllers
         /// <param name="locale">The locale.</param>
         /// <returns></returns>
         [HttpGet("Money")]
-        public string MoneyToString(string value, string locale = "en-us")
-                    => MoneyToStringConverter.Parse(value);
+        public JsonResult GetMoneyToString(string value, string locale)
+                    => Json(ConvertMoneyToString(value, locale));
 
-        /// <summary>
-        /// Moneys to string asynchronous.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="locale">The locale.</param>
-        /// <returns></returns>
-        [HttpGet("MoneyAsync")]
-        public async Task<string> MoneyToStringAsync(string value, string locale = "en-us")
-                    => await MoneyToStringConverter.ParseAsync(value);
+        private MoneyToStringResponse ConvertMoneyToString(string value, string locale = "en-us")
+            => new MoneyToStringResponse()
+            {
+                Body = MoneyToStringConverter.Parse(value)
+            };
     }
 }
